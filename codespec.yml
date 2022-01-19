@@ -1,0 +1,14 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      aws ec2 run-instances \
+      --image-id ami-08e4e35cccc6189f4 \
+      --count 1 \
+      --instance-type t2.micro \
+      --key-name MyKeyPair \
+      --security-group-ids sg-06cde0141955cf28d \
+      --subnet-id subnet-0e920601da7eafad3 \
+
+build:
+  - aws cloudformation validate-template --template-body file://sampletemplate.json

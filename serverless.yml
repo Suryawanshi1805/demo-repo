@@ -1,1 +1,17 @@
-
+service: <+service.name>  
+frameworkVersion: '2 || 3'  
+  
+provider:  
+  name: aws  
+  runtime: nodejs12.x  
+functions:  
+  hello:  
+    handler: handler.hello  
+    events:  
+      - httpApi:  
+          path: /tello  
+          method: get    
+package:  
+  artifact: <https://test-harness-bucket-pooja.s3.amazonaws.com/handler.zip>          
+plugins:  
+  - serverless-deployment-bucket@latest

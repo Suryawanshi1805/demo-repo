@@ -1,0 +1,48 @@
+pipeline:
+  name: CreateStack
+  identifier: CreateStack
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: EBT-ISA-infra-setup
+        identifier: infrasetup
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
+              - parallel:
+                  - step:
+                      type: CreateStack
+                      name: InfraStack
+                      identifier: ebtisainflightserviceinfrastack
+                      spec:
+                        provisionerIdentifier: test-infra
+                        configuration:
+                          stackName: Test-Infra-stack
+                          connectorRef: aws
+                          region: us-east-1
+                          templateFile:
+                            type: Remote
+                            spec:
+                              store:
+                                type: Github
+                                spec:
+                                  paths:
+                                    - infra-stack.yaml
+                                  connectorRef: GitHub
+                                  gitFetchType: Branch
+                                  repoName: demo-repo
+                                  branch: main
+                          roleArn: ""
+                          tags:
+                            type: Inline
+                            spec:
+                              content: |-
+                                [{
+                                 "key":"ApplicationCI",
+                                 "value":"ebt"
+                                }]
+                      timeout: 10m

@@ -22,7 +22,7 @@ pipeline:
                     configuration:
                       stackName: EcsStack
                       connectorRef: AWSConnector
-                      region: us-east-1
+                      region: us-east-2
                       templateFile:
                         type: Remote
                         spec:

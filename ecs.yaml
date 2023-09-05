@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+  InstanceType:
+    Description: WebServer EC2 instance type
+    Type: String
+    Default: t3.medium
+    AllowedValues:
+    - t3.medium
+    - t2.medium
+  AppENV:
+    Type: String
+
+Resources:
+  ECSServiceAutoScalingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AppENV}-ECS-ExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs.amazonaws.com
+                - ecs-tasks.amazonaws.com
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+
+  EcsPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - ecs:*
+              - ec2:*
+            Effect: Allow
+            Resource: "*"
+        Version: '2012-10-17'
+      Roles: 
+        - !Ref ECSServiceAutoScalingRole
+      PolicyName: !Sub ${AppENV}-ECS-Policy
+
+  ClusterVPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: 10.192.0.0/16
+
+  ClusterSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: ClusterVPC
+      CidrBlock: 10.192.20.0/24
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      VpcId: !Ref ClusterVPC
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub ${AppENV}-ECS-Cluster
+  
+  taskdefinition: 
+    Type: AWS::ECS::TaskDefinition
+    Properties: 
+      ExecutionRoleArn: !Ref ECSServiceAutoScalingRole
+      NetworkMode: awsvpc
+      TaskRoleArn: !Ref ECSServiceAutoScalingRole
+      Cpu: 256
+      Memory: 512
+      RequiresCompatibilities: 
+        - EC2
+      RuntimePlatform:
+        OperatingSystemFamily: LINUX   
+      ContainerDefinitions:
+        - Name: new-Image
+          Image: nginx:latest
+          PortMappings:
+            - ContainerPort: 80
+
+  TestECS:
+    Type: AWS::ECS::Service
+    Properties: 
+      Cluster: !Ref ECSCluster
+      TaskDefinition: !Ref taskdefinition
+      ServiceName: !Sub ${AppENV}-ECS-Service
+      LaunchType: EC2
+      DesiredCount: 2
+      DeploymentConfiguration:
+        MaximumPercent: 50
+        MinimumHealthyPercent: 150

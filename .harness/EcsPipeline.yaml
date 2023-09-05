@@ -38,7 +38,10 @@ pipeline:
                       roleArn: ""
                       parameterOverrides:
                         - name: AppENV
-                          value: dev
+                          value: <+input>
+                          type: String
+                        - name: KeyName
+                          value: <+input>
                           type: String
                   timeout: 10m
         tags: {}

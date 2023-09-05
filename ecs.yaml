@@ -107,7 +107,7 @@ Resources:
       SchedulingStrategy: REPLICA
       DeploymentConfiguration:
         MaximumPercent: 200
-        MinimumHealthyPercent: 150
+        MinimumHealthyPercent: 100
       NetworkConfiguration:
         AwsvpcConfiguration:
           SecurityGroups: 

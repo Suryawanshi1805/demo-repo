@@ -107,3 +107,10 @@ Resources:
       DeploymentConfiguration:
         MaximumPercent: 50
         MinimumHealthyPercent: 150
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups: 
+            - !Ref InstanceSecurityGroup
+          Subnets: 
+            - !Ref ClusterSubnet

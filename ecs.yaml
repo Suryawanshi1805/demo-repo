@@ -15,36 +15,36 @@ Parameters:
     Type: String
 
 Resources:
-  ECSServiceAutoScalingRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub ${AppENV}-ECS-ExecutionRole
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - ecs.amazonaws.com
-                - ecs-tasks.amazonaws.com
-                - ec2.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
-
-  EcsPolicy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action:
-              - ecs:*
-              - ec2:*
-            Effect: Allow
-            Resource: "*"
-        Version: '2012-10-17'
-      Roles: 
-        - !Ref ECSServiceAutoScalingRole
-      PolicyName: !Sub ${AppENV}-ECS-Policy
+#  ECSServiceAutoScalingRole:
+#    Type: AWS::IAM::Role
+#    Properties:
+#      RoleName: !Sub ${AppENV}-ECS-ExecutionRole
+#      AssumeRolePolicyDocument:
+#        Version: "2012-10-17"
+#        Statement:
+#          - Effect: Allow
+#            Principal:
+#              Service:
+#                - ecs.amazonaws.com
+#                - ecs-tasks.amazonaws.com
+#                - ec2.amazonaws.com
+#            Action:
+#              - 'sts:AssumeRole'
+#
+#  EcsPolicy:
+#    Type: AWS::IAM::Policy
+#    Properties:
+#      PolicyDocument:
+#        Statement:
+#          - Action:
+#              - ecs:*
+#              - ec2:*
+#            Effect: Allow
+#            Resource: "*"
+#        Version: '2012-10-17'
+#      Roles: 
+#        - !Ref ECSServiceAutoScalingRole
+#      PolicyName: !Sub ${AppENV}-ECS-Policy
 
   ClusterVPC:
     Type: AWS::EC2::VPC

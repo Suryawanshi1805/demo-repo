@@ -110,7 +110,6 @@ Resources:
         MinimumHealthyPercent: 150
       NetworkConfiguration:
         AwsvpcConfiguration:
-          AssignPublicIp: ENABLED
           SecurityGroups: 
             - !Ref InstanceSecurityGroup
           Subnets: 

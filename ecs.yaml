@@ -81,9 +81,9 @@ Resources:
   taskdefinition: 
     Type: AWS::ECS::TaskDefinition
     Properties: 
-      ExecutionRoleArn: !Ref ECSServiceAutoScalingRole
+#      ExecutionRoleArn: !Ref ECSServiceAutoScalingRole
       NetworkMode: awsvpc
-      TaskRoleArn: !Ref ECSServiceAutoScalingRole
+#      TaskRoleArn: !Ref ECSServiceAutoScalingRole
       Cpu: 256
       Memory: 512
       RequiresCompatibilities: 

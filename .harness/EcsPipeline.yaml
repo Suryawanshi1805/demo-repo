@@ -43,5 +43,5 @@ pipeline:
                         - name: KeyName
                           value: <+input>
                           type: String
-                  timeout: 12m
+                  timeout: 15m
         tags: {}
